@@ -6,6 +6,7 @@ var bodyparser = require('body-parser') // getting data from client(body)
 server.use(bodyparser.urlencoded({extended:true}))
 server.use(bodyparser.json())
 
+var mongodb = require('./Database/mongodb.js') // integrating out Mongodb Databas file..it is inside Database/ filder.. we can access that file using this varialble
 
 
 server.use(express.static(path.join(__dirname,'client/views')))  // starting journey to get that shit login.html
@@ -18,14 +19,51 @@ server.get('/', function(req, res){ //now express came to action.   '/' is for d
 })
 
 
+
+// hairpin-bend - one
+// when Login 
 server.post('/submit', function(req, res){ // oh someone sending his details from frontend ... we have to check those
-      console.log(req.body)  // usually incomming data's are where in query* pocket . or in body pocket
-      // console.log(req.body) // if you want to see...that... uncomment this line
-
-      
-      res.send("Okay")// if someone asking ..we have to be respond. even it would be a look  
-
+      console.log(req.body)  // usually incomming data's are where is in query* . or inside body*
+      // console.log(req.body) // if you want to see...that... uncomment this line. &run 
+      res.send("Okay")// if someone asking ..we have to be respond. even it would be a look . Is shows in browser console
 })
+
+
+
+// hairpin-bend - two
+// Registration
+server.post('/register', function(req, res){  // we are goind to store the data to database
+
+   console.log(req.body) // user have to give name,email details..
+   
+   // writing some database code
+
+   // 1. check the user detail is already in db
+   mongodb.accounts.findOne({name : req.body.name}, function(err, data){  // chekcing name, and it will give a callback(error and data)
+      if(err){console.log(err)}
+      else {
+         console.log(data)  
+         if(data==null){  // is null user details not available,..we have to add that new user
+            mongodb.accounts({name:req.body.name,age:req.body.age}).save() // it will create new user in db
+            .then((out)=>{
+               console.log(out)
+               res.send(out) // accoutn created
+            })
+            .catch((e)=>{
+               console.log(e)
+               res.send("error dod")
+            })
+         }
+         else {   // throw him to login page if he is already registered
+            res.redirect(301,'/login')
+         }
+      }
+   }) 
+   
+})
+
+
+
 
 server.listen(8080,(()=>{   // server starting listening on localhost = its 127.0.0.1:port   =>port is 8080
    console.log("visit http://localhost:8080")  // printing for our reference
@@ -35,3 +73,4 @@ server.listen(8080,(()=>{   // server starting listening on localhost = its 127.
 
 // files 
 // package.json is an npm shit = its have all the details about our damn project.
+// node_modules folder tons of nodejs Packages like express , body-parser, path, mongoose......
