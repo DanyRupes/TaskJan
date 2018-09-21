@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Login</title>
+
+   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+   <form id="loginform">
+      <input type="text" id="name" placeholder="Name"><br>
+      <input type="text" id="age" placeholder="Age"><br>
+      <input type="submit" id="btnsubmit">
+   </form>
+
+
+   <script>
+      $("#loginform").submit(function (e) {
+         var name = document.getElementById("name").value;
+         var age = document.getElementById("age").value;
+
+         console.log(name)
+         console.log(age)
+
+         $.ajax({
+            method: "POST", // he is sending some details..so post
+            url: '/submit', // he opening request on '/submit' #url
+            data : {
+               "name" : name,
+               "age"  :age,
+            }
+         }).then((res)=>{
+            console.log(res)
+         }).catch((e)=>{
+            console.log(e)
+         })
+         return false
+      })
+   </script>
+</body>
+
+</html>
